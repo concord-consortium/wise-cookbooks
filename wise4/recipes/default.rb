@@ -2,7 +2,8 @@
 include_recipe "mysql::server"
 include_recipe "tomcat"
 include_recipe "ant"
-include_recipe "maven"
+# http://serverfault.com/questions/407818/overriding-attributes-with-chef-solo
+# include_recipe "maven"  #Todo maven isn't installing 404 errors.
 include_recipe "git"
 
 script "set locale and timezone" do
