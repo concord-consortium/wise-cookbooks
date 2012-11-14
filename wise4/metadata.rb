@@ -1,3 +1,4 @@
+name              "wise4"
 maintainer        "Noah Paessel"
 maintainer_email  "npaessel@concord.org"
 license           "mit"

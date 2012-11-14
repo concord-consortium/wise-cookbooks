@@ -1,12 +1,11 @@
-maintainer        "Opscode, Inc."
-maintainer_email  "cookbooks@opscode.com"
-license           "Apache 2.0"
-description       "Configures apt and apt services and an LWRP for managing apt repositories"
+name              "vagrant_main"
+maintainer        "Noah Paessel"
+maintainer_email  "npaessel@concord.org"
+license           "mit"
+description       "Bootsraps a WISE4 deploy"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           "1.1.1"
-recipe            "apt", "Runs apt-get update during compile phase and sets up preseed directories"
-recipe            "apt::cacher", "Set up an APT cache"
-recipe            "apt::cacher-client", "Client for the apt::cacher server"
+version           "0.0.2"
+recipe            "default", "Setups Vagrant user, requires other cookbooks."
 
 %w{ ubuntu debian }.each do |os|
   supports os
