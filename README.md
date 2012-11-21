@@ -17,8 +17,8 @@ This repository only contains chef cookbooks. It can be used by other projects u
 ### Refs: ###
 
 * [wise-cookbooks][wise-cookbooks] This project. A simple set of chef cookbooks. (Only vagrant main and wise4 are used.)
-* [wise4-vagrant][wise4-vagrant] The old system for deploying to vagrant. The wise4-ec2 branch
-* [wise-chef][wise-chef] Consumes this librian repo. Should be combined with [wise-cloud][wise-cloud] to produce final step development environment.
+* [wise-chef][wise-chef] Consumes this librian repo. Can be used to setup a wise4 development environment on ec2 servers. 
+*  [wise4-vagrant][wise4-vagrant] The old system for deploying to vagrant. The wise4-ec2 branch
 * [Librarian][librarian] use git to distribute chef cookbooks. 
 * [Wise Developers git repository][WISE Github]
 
