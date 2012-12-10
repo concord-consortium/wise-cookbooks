@@ -151,19 +151,23 @@ end
 
 # Item 9
 execute "create wise4user user" do
-  command "/usr/bin/mysql -u root -p#{node[:mysql][:server_root_password]} -e \"CREATE USER 'wise4user'@'localhost' identified by 'wise4pass'\""
-  only_if { `/usr/bin/mysql -u root -p#{node[:mysql][:server_root_password]} -D mysql -r -B -N -e "SELECT COUNT(*) FROM user where User='wise4user' and Host = 'localhost'"`.to_i == 0 }
+  user = node["wise4"]["db_user"]
+  pass = node["wise4"]["db_pass"]
+  command "/usr/bin/mysql -u root -p#{node[:mysql][:server_root_password]} -e \"CREATE USER '#{user}'@'localhost' identified by '#{pass}'\""
+  only_if { `/usr/bin/mysql -u root -p#{node[:mysql][:server_root_password]} -D mysql -r -B -N -e "SELECT COUNT(*) FROM user where User='#{user}' and Host = 'localhost'"`.to_i == 0 }
 end
 
 execute "create application_production databases" do
   not_if { File.exists? '/home/vagrant/made_databases'}
+  user = node["wise4"]["db_user"]
+  pass = node["wise4"]["db_pass"]
   sql= <<-SQL
     drop database if exists sail_database;
     create database sail_database;
-    grant all privileges on sail_database.* to 'wise4user'@'localhost' identified by 'wise4pass';
+    grant all privileges on sail_database.* to '#{user}'@'localhost' identified by '#{pass}';
     drop database if exists vle_database;
     create database vle_database;
-    grant all privileges on vle_database.* to 'wise4user'@'localhost' identified by 'wise4pass';
+    grant all privileges on vle_database.* to '#{user}'@'localhost' identified by '#{pass}';
     flush privileges;
   SQL
   # using commandline here instead of mysql recipe because that doesn't support for queries outside of databases
