@@ -24,14 +24,17 @@ when "centos","redhat","fedora"
   include_recipe "jpackage"
 end
 
+tcv = node["tomcat"]["version"] || "6"
+tomcat_name = "tomcat#{tcv}"
+
 tomcat_pkgs = value_for_platform(
   ["debian","ubuntu"] => {
-    "default" => ["tomcat6","tomcat6-admin"]
+    "default" => ["#{tomcat_name}","#{tomcat_name}-admin"]
   },
   ["centos","redhat","fedora"] => {
-    "default" => ["tomcat6","tomcat6-admin-webapps"]
+    "default" => ["#{tomcat_name}","#{tomcat_name}-admin-webapps"]
   },
-  "default" => ["tomcat6"]
+  "default" => [tomcat_name]
 )
 tomcat_pkgs.each do |pkg|
   package pkg do
