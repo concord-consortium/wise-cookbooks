@@ -17,25 +17,25 @@ script "set locale and timezone" do
 end
 
 # Item 2
-template "/etc/tomcat6/context.xml" do
+template "#{node["tomcat"]["config_dir"]}/context.xml" do
   source "context.xml.erb"
-  owner "tomcat6"
-  group "tomcat6"
+  owner node["tomcat"]["user"]
+  group node["tomcat"]["user"]
   mode "0644"
   notifies :restart, resources(:service => "tomcat")
 end
 
 # Item 3 is specified in Vagrant file 
 
-WEBAPPS_PATH = "/var/lib/tomcat6/webapps"
+
 
 # Item 4
 # this assumes the default CATALAINA_BASE location
 %w{curriculum studentuploads}.each do |dir|
-  directory "#{WEBAPPS_PATH}/#{dir}" do
+  directory "#{node["tomcat"]["webapp_dir"]}/#{dir}" do
      mode 0775
-     owner "tomcat6"
-     group "tomcat6"
+     owner node["tomcat"]["user"]
+     group node["tomcat"]["user"]
      action :create
      recursive true
   end
@@ -83,8 +83,8 @@ if (node["build_wise_from_source"])
 
     script "install war file for #{war_name}" do
       interpreter "bash"
-      user "tomcat6"
-      code "cp #{WISE4_SRC_PATH}/#{dir}/target/#{war_name}.war #{WEBAPPS_PATH}"
+      user node["tomcat"]["version"]
+      code "cp #{WISE4_SRC_PATH}/#{dir}/target/#{war_name}.war #{node["tomcat"]["webapp_dir"]}"
     end
   end
 else  #for a binary build:
@@ -92,12 +92,11 @@ else  #for a binary build:
   # unfortunately, its often much easier just to do this:
   downloaded_webapps = {'webapp' => '4.5', 'vlewrapper' => '4.5'}
   downloaded_webapps.each do |base, suffix|
-    remote_file "/var/lib/tomcat6/webapps/#{base}.war" do
-      owner "tomcat6"
+    remote_file "#{node["tomcat"]["webapp_dir"]}/#{base}.war" do
+      owner node["tomcat"]["user"]
       source "http://wise4.org/downloads/software/stable/#{base}-#{suffix}.war"
       mode "0644"
-      # check if each of the app folders exists when they are unpacked these folders are created
-      not_if { File.directory? "/var/lib/tomcat6/webapps/#{base}" }
+      not_if { File.directory? "#{node["tomcat"]["webapp_dir"]}/#{base}" }
     end
   end
 
@@ -135,10 +134,10 @@ execute "wait for tomcat to restart" do
 end
 
 # Item 8
-template "/var/lib/tomcat6/webapps/webapp/WEB-INF/classes/portal.properties" do
+template "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/portal.properties" do
   source "portal.properties.erb"
-  owner "tomcat6"
-  group "tomcat6"
+  owner node["tomcat"]["user"]
+  group node["tomcat"]["user"]
   mode "0644"
 end
 
@@ -178,7 +177,7 @@ end
 # Item 11
 execute "create-sail_database-schemas" do
   not_if { File.exists? '/home/vagrant/made_sail_schema'}
-  cwd "/var/lib/tomcat6/webapps/webapp/WEB-INF/classes/tels"
+  cwd "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/tels"
   command "mysql sail_database -u root -p#{node[:mysql][:server_root_password]} < wise4-createtables.sql && touch /home/vagrant/made_sail_schema"
   creates "/home/vagrant/made_sail_schema"
 end
@@ -186,7 +185,7 @@ end
 # Item 12
 execute "insert-default-values-into-sail_database" do
   not_if { File.exists? '/home/vagrant/made_sail_data'}
-  cwd "/var/lib/tomcat6/webapps/webapp/WEB-INF/classes/tels"
+  cwd "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/tels"
   command "mysql sail_database -u root -p#{node[:mysql][:server_root_password]} < wise4-initial-data.sql  && touch /home/vagrant/made_sail_data"
   creates "/home/vagrant/made_sail_data"
 end
