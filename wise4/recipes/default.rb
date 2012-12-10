@@ -96,7 +96,6 @@ else  #for a binary build:
       owner "tomcat6"
       source "http://wise4.org/downloads/software/stable/#{base}-#{suffix}.war"
       mode "0644"
-      notifies :restart, resources(:service => "tomcat")
       # check if each of the app folders exists when they are unpacked these folders are created
       not_if { File.directory? "/var/lib/tomcat6/webapps/#{base}" }
     end
@@ -118,9 +117,21 @@ service "tomcat" do
   action :restart
 end
 
+# we need to pause here for a while.
+# there has got to be a better way, but meh.
+execute "wait for tomcat to restart" do
+  command "sleep 30"
+end
+
 # Item 7
 service "tomcat" do
   action :stop
+end
+
+# we need to pause here for a while.
+# there has got to be a better way, but meh.
+execute "wait for tomcat to restart" do
+  command "sleep 10"
 end
 
 # Item 8
@@ -129,7 +140,6 @@ template "/var/lib/tomcat6/webapps/webapp/WEB-INF/classes/portal.properties" do
   owner "tomcat6"
   group "tomcat6"
   mode "0644"
-  notifies :restart, resources(:service => "tomcat")
 end
 
 # also a copy for the update-wise4.sh script
