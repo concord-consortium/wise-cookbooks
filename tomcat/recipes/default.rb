@@ -43,7 +43,7 @@ tomcat_pkgs.each do |pkg|
 end
 
 service "tomcat" do
-  service_name "tomcat6"
+  service_name node["tomcat"]["service_name"]
   case node["platform"]
   when "centos","redhat","fedora"
     supports :restart => true, :status => true
@@ -55,16 +55,16 @@ end
 
 case node["platform"]
 when "centos","redhat","fedora"
-  template "/etc/sysconfig/tomcat6" do
-    source "sysconfig_tomcat6.erb"
+  template "/etc/sysconfig/#{node["tomcat"]["service_name"]}" do
+    source "sysconfig_#{node["tomcat"]["service_name"]}.erb"
     owner "root"
     group "root"
     mode "0644"
     notifies :restart, resources(:service => "tomcat")
   end
 else  
-  template "/etc/default/tomcat6" do
-    source "default_tomcat6.erb"
+  template "/etc/default/#{node["tomcat"]["service_name"]}" do
+    source "default_#{node["tomcat"]["service_name"]}.erb"
     owner "root"
     group "root"
     mode "0644"
@@ -72,7 +72,7 @@ else
   end
 end
 
-template "/etc/tomcat6/server.xml" do
+template "/etc/#{node["tomcat"]["service_name"]}/server.xml" do
   source "server.xml.erb"
   owner "root"
   group "root"

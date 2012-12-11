@@ -17,6 +17,7 @@
 # limitations under the License.
 
 default["tomcat"]["version"]="7"
+default["tomcat"]["service_name"] = "tomcat#{tomcat["version"]}"
 default["tomcat"]["port"] = 8080
 default["tomcat"]["ssl_port"] = 8443
 default["tomcat"]["ajp_port"] = 8009
