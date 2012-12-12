@@ -25,8 +25,12 @@
 include_recipe "mysql::server"
 include_recipe "tomcat"
 include_recipe "ant"
+
+# TODO: We should get Maven and BUILD FORM SOURCE working again.
+
 # http://serverfault.com/questions/407818/overriding-attributes-with-chef-solo
 # include_recipe "maven"  #Todo maven isn't installing 404 errors.
+
 include_recipe "git"
 
 script "set locale and timezone" do
@@ -39,7 +43,7 @@ script "set locale and timezone" do
   EOH
 end
 
-# Item 2
+
 template "#{node["tomcat"]["config_dir"]}/context.xml" do
   source "context.xml.erb"
   owner node["tomcat"]["user"]
@@ -48,12 +52,7 @@ template "#{node["tomcat"]["config_dir"]}/context.xml" do
   notifies :restart, resources(:service => "tomcat")
 end
 
-# Item 3 is specified in Vagrant file 
 
-
-
-# Item 4
-# this assumes the default CATALAINA_BASE location
 %w{curriculum studentuploads}.each do |dir|
   directory "#{node["tomcat"]["webapp_dir"]}/#{dir}" do
      mode 0775
@@ -133,30 +132,28 @@ cookbook_file "/home/vagrant/src/update-wise4.sh" do
 end
 
 
-# Item 6
 # need to force a catalina restart so the wars get exploded
 service "tomcat" do
   action :restart
 end
 
 # we need to pause here for a while.
-# there has got to be a better way, but meh.
+# Shouldn't need this; but we do.
 execute "wait for tomcat to restart" do
   command "sleep 30"
 end
 
-# Item 7
 service "tomcat" do
   action :stop
 end
 
 # we need to pause here for a while.
-# there has got to be a better way, but meh.
-execute "wait for tomcat to restart" do
+# Shouldn't need this; but we do.
+execute "wait for tomcat to stop" do
   command "sleep 10"
 end
 
-# Item 8
+
 template "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/portal.properties" do
   source "portal.properties.erb"
   owner node["tomcat"]["user"]
@@ -172,7 +169,6 @@ template "/home/vagrant/portal.properties" do
   mode "0644"
 end
 
-# Item 9
 execute "create wise4user user" do
   user = node["wise4"]["db_user"]
   pass = node["wise4"]["db_pass"]
@@ -198,10 +194,6 @@ execute "create application_production databases" do
   creates "/home/vagrant/made_databases"
 end
 
-# Item 10
-# don't need to do anything because the defaults work
-
-# Item 11
 execute "create-sail_database-schemas" do
   not_if { File.exists? '/home/vagrant/made_sail_schema'}
   cwd "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/tels"
@@ -209,7 +201,6 @@ execute "create-sail_database-schemas" do
   creates "/home/vagrant/made_sail_schema"
 end
 
-# Item 12
 execute "insert-default-values-into-sail_database" do
   not_if { File.exists? '/home/vagrant/made_sail_data'}
   cwd "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/tels"
