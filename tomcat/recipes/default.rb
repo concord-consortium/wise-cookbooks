@@ -73,7 +73,7 @@ else
 end
 
 template "/etc/#{node["tomcat"]["service_name"]}/server.xml" do
-  source "server.xml.erb"
+  source "server_#{node["tomcat"]["service_name"]}.xml.erb"
   owner "root"
   group "root"
   mode "0644"
