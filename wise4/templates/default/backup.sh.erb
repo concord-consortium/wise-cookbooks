@@ -1,10 +1,14 @@
 # STEPS TO BACKUP A WISE PORTAL
 
-# A thorough approach would be to copy the complete webapps.... 
-# cd $CATALINA_HOME/webapps && tar -rvf ~/$backup_dir/webapp.tar.gz webapp
-# cd $CATALINA_HOME/webapps && tar -rvf ~/$backup_dir/vlewrapper.tar.gz vlewrapper
+# An attempt to automate the backup proceedure described here:
+# https://github.com/WISE-Community/WISE/wiki/How-to-Setup-WISE:-Stable-Deployment-Model#wiki-UPDATING_WISE4
 
-export CATALINA_HOME=/var/lib/tomcat6
+WEB_APPS=<%= node["tomcat"]["webapp_dir"] %>
+
+# A thorough approach would be to copy the complete webapps dir ...
+# cd $WEB_APPS && tar -rvf ~/$backup_dir/webapp.tar.gz webapp
+# cd $WEB_APPS && tar -rvf ~/$backup_dir/vlewrapper.tar.gz vlewrapper
+
 date=`date +%Y_%m_%d`
 backup_dir=~/backup
 mkdir -p $backup_dir
@@ -17,10 +21,10 @@ cd ~ && tar -cvf $tarfile $dbfile
 cd ~ && rm mdbfile
 
 # add curriculum and settings files
-cd $CATALINA_HOME/webapps && tar -rvf $tarfile curriculum
-cd $CATALINA_HOME/webapps && tar -rvf $tarfile webapp/WEB-INF/classes/portal.properties
-cd $CATALINA_HOME/webapps && tar -rvf $tarfile webapp/WEB-INF/classes/configurations/applicationContexts/pas/datasource.xml
-cd $CATALINA_HOME/webapps && tar -rvf $tarfile vlewrapper/WEB-INF/classes/hibernate.cfg.xml
-cd $CATALINA_HOME/webapps && tar -rvf $tarfile vlewrapper/WEB-INF/classes/vle.properties
+cd $WEB_APPS && tar -rvf $tarfile curriculum
+cd $WEB_APPS && tar -rvf $tarfile webapp/WEB-INF/classes/portal.properties
+cd $WEB_APPS && tar -rvf $tarfile webapp/WEB-INF/classes/configurations/applicationContexts/pas/datasource.xml
+cd $WEB_APPS && tar -rvf $tarfile vlewrapper/WEB-INF/classes/hibernate.cfg.xml
+cd $WEB_APPS && tar -rvf $tarfile vlewrapper/WEB-INF/classes/vle.properties
 # compress it
 cd ~ && gzip -f $tarfile
