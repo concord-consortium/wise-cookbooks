@@ -161,12 +161,11 @@ template "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/portal.properti
   mode "0644"
 end
 
-# also a copy for the update-wise4.sh script
-template "/home/vagrant/portal.properties" do
-  source "portal.properties.erb"
-  owner "vagrant"
-  group "vagrant"
-  mode "0644"
+template "/home/#{node["wise4"]["dev_user"]}/backup.sh" do
+  source "backup.sh.erb"
+  owner node["wise4"]["dev_user"]
+  group node["wise4"]["dev_user"]
+  mode "0755"
 end
 
 execute "create wise4user user" do
@@ -208,4 +207,7 @@ execute "insert-default-values-into-sail_database" do
   creates "/home/vagrant/made_sail_data"
 end
 
-# Item 13 happens automatically with the notifies restart lines above
+# restart tomcat after DB changes? sure.
+service "tomcat" do
+  action :restart
+end

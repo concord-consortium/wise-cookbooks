@@ -1,0 +1,26 @@
+# STEPS TO BACKUP A WISE PORTAL
+
+# A thorough approach would be to copy the complete webapps.... 
+# cd $CATALINA_HOME/webapps && tar -rvf ~/$backup_dir/webapp.tar.gz webapp
+# cd $CATALINA_HOME/webapps && tar -rvf ~/$backup_dir/vlewrapper.tar.gz vlewrapper
+
+export CATALINA_HOME=/var/lib/tomcat6
+date=`date +%Y_%m_%d`
+backup_dir=~/backup
+mkdir -p $backup_dir
+tarfile=${backup_dir}/${date}.tar
+dbfile=wise4_dbs_${date}.sql
+
+# create archive containing mysql backups
+cd ~ && mysqldump --databases sail_database vle_database -u <%= node["wise4"]["db_user"] %> -p<%= node["wise4"]["db_pass"] %> > $dbfile
+cd ~ && tar -cvf $tarfile $dbfile
+cd ~ && rm mdbfile
+
+# add curriculum and settings files
+cd $CATALINA_HOME/webapps && tar -rvf $tarfile curriculum
+cd $CATALINA_HOME/webapps && tar -rvf $tarfile webapp/WEB-INF/classes/portal.properties
+cd $CATALINA_HOME/webapps && tar -rvf $tarfile webapp/WEB-INF/classes/configurations/applicationContexts/pas/datasource.xml
+cd $CATALINA_HOME/webapps && tar -rvf $tarfile vlewrapper/WEB-INF/classes/hibernate.cfg.xml
+cd $CATALINA_HOME/webapps && tar -rvf $tarfile vlewrapper/WEB-INF/classes/vle.properties
+# compress it
+cd ~ && gzip -f $tarfile

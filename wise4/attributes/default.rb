@@ -26,3 +26,6 @@
 
 default["wise4"]["db_user"] = "wise4user"
 default["wise4"]["db_pass"] = "wise4pass"
+
+# TODO: FIXME Ubuntu / AWS specific(!) and permissions?
+default["wise4"]["dev_user"] = "ubuntu"
