@@ -10,17 +10,24 @@ WEB_APPS=<%= node["tomcat"]["webapp_dir"] %>
 archive=backup.tar.gz
 
 # shutdown tomcat
-sudo service tomcat stop
+sudo service <%= node["tomcat"]["service_name"] %> stop
 
 # sleep
-sleep 20
+sleep 10
 
 # copy archive
-cp ~/$archive $WEB_APPS
+sudo cp ~/$archive $WEB_APPS
 
 # unpack archive
-cd $WEB_APPS && tar -zxvf $archive
+cd $WEB_APPS && sudo tar -zxvf $archive
+cd $WEB_APPS && sudo chown <%= node["tomcat"]["service_name"] %>.<%= node["tomcat"]["service_name"] %> .
+
+# update database
+cd $WEB_APPS && mysql -u <%= node["wise4"]["db_user"] %> -p<%= node["wise4"]["db_pass"] %> < *.sql
+
+# clean-up
+cd $WEB_APPS && sudo rm *.sql
+cd $WEB_APPS && sudo rm *.tar.gz
 
 # restart tomcat
-sudo service tomcat restart
-
+sudo service <%= node["tomcat"]["service_name"] %> restart
