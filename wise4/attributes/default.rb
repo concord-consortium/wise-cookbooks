@@ -37,6 +37,6 @@ default["wise4"]["dev_user"] = "ubuntu"
 # } 
 
 default["wise4"]["web_apps"] = {
-  'webapp'     => 'http://wise4.org/downloads/software/stable/webapp-20121210-0130am-UTC.war"', 
-  'vlewrapper' => 'http://wise4.org/downloads/software/nightly/vlewrapper-20121210-0130am-UTC.war'
+  'webapp'     => "http://wise4.org/downloads/software/nightly/webapp-20121213-0130am-UTC.war", 
+  'vlewrapper' => "http://wise4.org/downloads/software/nightly/vlewrapper-20121213-0130am-UTC.war"
 } 
