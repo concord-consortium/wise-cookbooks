@@ -18,7 +18,7 @@ dbfile=wise4_dbs_${date}.sql
 # create archive containing mysql backups
 cd ~ && mysqldump --databases sail_database vle_database -u <%= node["wise4"]["db_user"] %> -p<%= node["wise4"]["db_pass"] %> > $dbfile
 cd ~ && tar -cvf $tarfile $dbfile
-cd ~ && rm mdbfile
+cd ~ && rm $dbfile
 
 # add curriculum and settings files
 cd $WEB_APPS && tar -rvf $tarfile curriculum
@@ -28,3 +28,4 @@ cd $WEB_APPS && tar -rvf $tarfile vlewrapper/WEB-INF/classes/hibernate.cfg.xml
 cd $WEB_APPS && tar -rvf $tarfile vlewrapper/WEB-INF/classes/vle.properties
 # compress it
 cd ~ && gzip -f $tarfile
+cd ~ && ln -sf $tarfile.gz $backup_dir/current.tar.gz 
