@@ -118,7 +118,7 @@ else  #for a binary build:
       owner node["tomcat"]["user"]
       source url
       mode "0644"
-      not_if { File.directory? "#{node["tomcat"]["webapp_dir"]}/#{base}" }
+      not_if { File.directory? "#{node["tomcat"]["webapp_dir"]}/#{name}" }
     end
   end
 
