@@ -110,13 +110,13 @@ if (node["build_wise_from_source"])
     end
   end
 else  #for a binary build:
-  puts "Using binary build of WISE4 unset BUILD_WISE_FROM_SOURCE in your environment to build from source"
+  puts "Using binary build of WISE4 set BUILD_WISE_FROM_SOURCE in your environment to build from source"
   # unfortunately, its often much easier just to do this:
-  downloaded_webapps = {'webapp' => '4.5', 'vlewrapper' => '4.5'}
-  downloaded_webapps.each do |base, suffix|
-    remote_file "#{node["tomcat"]["webapp_dir"]}/#{base}.war" do
+  webapps = node["wise4"]["web_apps"]
+  webapps.each do |name, url|
+    remote_file "#{node["tomcat"]["webapp_dir"]}/#{name}.war" do
       owner node["tomcat"]["user"]
-      source "http://wise4.org/downloads/software/stable/#{base}-#{suffix}.war"
+      source url
       mode "0644"
       not_if { File.directory? "#{node["tomcat"]["webapp_dir"]}/#{base}" }
     end

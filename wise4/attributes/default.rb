@@ -29,3 +29,14 @@ default["wise4"]["db_pass"] = "wise4pass"
 
 # TODO: FIXME Ubuntu / AWS specific(!) and permissions?
 default["wise4"]["dev_user"] = "ubuntu"
+
+# Stable WAR files
+# default["wise4"]["web_apps"] = {
+#   'webapp'     => 'http://wise4.org/downloads/software/stable/webapp-4.5.war', 
+#   'vlewrapper' => 'http://wise4.org/downloads/software/stable/vlewrapper-4.5.war'
+# } 
+
+default["wise4"]["web_apps"] = {
+  'webapp'     => 'http://wise4.org/downloads/software/stable/webapp-20121210-0130am-UTC.war"', 
+  'vlewrapper' => 'http://wise4.org/downloads/software/nightly/vlewrapper-20121210-0130am-UTC.war'
+} 
