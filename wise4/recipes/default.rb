@@ -75,7 +75,7 @@ end
 
 
 if (node["build_wise_from_source"])
-    git "WISE4 sailportal:trunk:portal" do
+    git "WISE4 sail.p:trunk:portal" do
     repository "git://github.com/concord-consortium/WISE-Portal.git"
     reference "master"
     destination "#{WISE4_SRC_PATH}/portal"
@@ -156,6 +156,13 @@ end
 
 template "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/portal.properties" do
   source "portal.properties.erb"
+  owner node["tomcat"]["user"]
+  group node["tomcat"]["user"]
+  mode "0644"
+end
+
+template "#{node["tomcat"]["webapp_dir"]}/vlewrapper/WEB-INF/classes/vle.properties" do
+  source "vle.properties.erb"
   owner node["tomcat"]["user"]
   group node["tomcat"]["user"]
   mode "0644"
