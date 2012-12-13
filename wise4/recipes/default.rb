@@ -168,6 +168,13 @@ template "/home/#{node["wise4"]["dev_user"]}/backup.sh" do
   mode "0755"
 end
 
+template "/home/#{node["wise4"]["dev_user"]}/restore.sh" do
+  source "restore.sh.erb"
+  owner node["wise4"]["dev_user"]
+  group node["wise4"]["dev_user"]
+  mode "0755"
+end
+
 execute "create wise4user user" do
   user = node["wise4"]["db_user"]
   pass = node["wise4"]["db_pass"]

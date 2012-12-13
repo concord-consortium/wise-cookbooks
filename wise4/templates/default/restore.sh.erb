@@ -1,0 +1,26 @@
+# STEPS TO RESTORE A WISE PORTAL
+
+# An attempt to automate the backup proceedure described here:
+# https://github.com/WISE-Community/WISE/wiki/How-to-Setup-WISE:-Stable-Deployment-Model#wiki-UPDATING_WISE4
+
+# TODO: THIS HASN'T REALLY BEEN TESTED YET !!!
+
+WEB_APPS=<%= node["tomcat"]["webapp_dir"] %>
+
+archive=backup.tar.gz
+
+# shutdown tomcat
+sudo service tomcat stop
+
+# sleep
+sleep 20
+
+# copy archive
+cp ~/$archive $WEB_APPS
+
+# unpack archive
+cd $WEB_APPS && tar -zxvf $archive
+
+# restart tomcat
+sudo service tomcat restart
+
