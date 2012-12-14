@@ -122,14 +122,6 @@ else  #for a binary build:
       not_if { File.directory? "#{node["tomcat"]["webapp_dir"]}/#{name}" }
     end
   end
-
-end
-
-cookbook_file "/home/vagrant/src/update-wise4.sh" do
-  source "update-wise4.sh"
-  owner "vagrant"
-  group "vagrant"
-  mode "0755"
 end
 
 
@@ -152,6 +144,16 @@ end
 # Shouldn't need this; but we do.
 execute "wait for tomcat to stop" do
   command "sleep 10"
+end
+
+
+##
+## TODO: Make this more portable
+##  Change ownership of the vlewrapper/vle/node folder 
+## to be owned bynode["wise4"]["dev_user"]
+##
+execute "give Wise4 Dev user permission to write vle/node directory" do
+  command "sudo chown -R #{node["wise4"]["dev_user"]} #{node["tomcat"]["webapp_dir"]}/vlewrapper/vle/node"
 end
 
 
