@@ -114,6 +114,7 @@ else  #for a binary build:
   # unfortunately, its often much easier just to do this:
   webapps = node["wise4"]["web_apps"]
   webapps.each do |name, url|
+    puts "doanloading #{name}from #{url}"
     remote_file "#{node["tomcat"]["webapp_dir"]}/#{name}.war" do
       owner node["tomcat"]["user"]
       source url

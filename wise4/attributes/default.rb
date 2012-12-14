@@ -36,7 +36,15 @@ default["wise4"]["dev_user"] = "ubuntu"
 #   'vlewrapper' => 'http://wise4.org/downloads/software/stable/vlewrapper-4.5.war'
 # } 
 
+# Nightly Builds:
 default["wise4"]["web_apps"] = {
-  'webapp'     => "http://wise4.org/downloads/software/nightly/webapp-20121213-0130am-UTC.war", 
-  'vlewrapper' => "http://wise4.org/downloads/software/nightly/vlewrapper-20121213-0130am-UTC.war"
-} 
+  'webapp'     => "http://wise4.org/downloads/software/nightly/webapp-latest.war", 
+  'vlewrapper' => "http://wise4.org/downloads/software/nightly/vlewrapper-latest.war"
+}
+
+# # DEC 5th snapshot for 4.6 that Noah has testsed with MySystem.
+# # TODO put these in some other shared space
+# default["wise4"]["web_apps"] = {
+#   'webapp'     => "https://dl.dropbox.com/u/73403/wiseimages/webapp_2012_12_05.war",
+#   'vlewrapper' => "https://dl.dropbox.com/u/73403/wiseimages/vlewrapper_2012_12_05.war"
+# }
