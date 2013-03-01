@@ -21,7 +21,7 @@
 # IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 default["wise4"]["db_user"] = "wise4user"
@@ -32,13 +32,13 @@ default["wise4"]["dev_user"] = "ubuntu"
 
 # Stable WAR files
 # default["wise4"]["web_apps"] = {
-#   'webapp'     => 'http://wise4.org/downloads/software/stable/webapp-4.5.war', 
+#   'webapp'     => 'http://wise4.org/downloads/software/stable/webapp-4.5.war',
 #   'vlewrapper' => 'http://wise4.org/downloads/software/stable/vlewrapper-4.5.war'
-# } 
+# }
 
 # Nightly Builds:
 default["wise4"]["web_apps"] = {
-  'webapp'     => "http://wise4.org/downloads/software/nightly/webapp-latest.war", 
+  'webapp'     => "http://wise4.org/downloads/software/nightly/webapp-latest.war",
   'vlewrapper' => "http://wise4.org/downloads/software/nightly/vlewrapper-latest.war"
 }
 

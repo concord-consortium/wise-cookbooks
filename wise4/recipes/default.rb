@@ -20,11 +20,31 @@
 # IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 # CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+include_recipe "apt"
+include_recipe "emacs"
+include_recipe "vim"
 include_recipe "mysql::server"
 include_recipe "tomcat"
 include_recipe "ant"
+
+user "wiseuser" do
+  comment "wiseuser user for wise4 deployment & dev"
+  shell "/bin/bash"
+  home "/home/wiseuser/"
+  # supports :manage_home => false
+end
+
+# create wiseusers home directory unless it exists already:
+directory "/home/wiseuser" do
+   mode 0775
+   owner "wiseuser"
+   group "wiseuser"
+   action :create
+   recursive true
+end
+
 
 # TODO: We should get Maven and BUILD FORM SOURCE working again.
 
@@ -64,11 +84,11 @@ end
 end
 
 # create a directory for the wise4 source checkouts
-WISE4_SRC_PATH = "/home/vagrant/src"
+WISE4_SRC_PATH = "/home/wiseuser/src"
 directory WISE4_SRC_PATH do
    mode 0775
-   owner "vagrant"
-   group "vagrant"
+   owner "wiseuser"
+   group "wiseuser"
    action :create
    recursive true
 end
@@ -79,8 +99,8 @@ if (node["build_wise_from_source"])
     repository "git://github.com/concord-consortium/WISE-Portal.git"
     reference "master"
     destination "#{WISE4_SRC_PATH}/portal"
-    user "vagrant"
-    group "vagrant"
+    user "wiseuser"
+    group "wiseuser"
     action :sync
   end
 
@@ -88,8 +108,8 @@ if (node["build_wise_from_source"])
     repository "https://github.com/WISE-Community/WISE-VLE.git"
     reference "master"
     destination "#{WISE4_SRC_PATH}/vlewrapper"
-    user "vagrant"
-    group "vagrant"
+    user "wiseuser"
+    group "wiseuser"
     action :sync
   end
 
@@ -98,7 +118,7 @@ if (node["build_wise_from_source"])
 
     script "build #{dir}:#{war_name}.war with maven and install" do
       interpreter "bash"
-      user "vagrant"
+      user "wiseuser"
       cwd "#{WISE4_SRC_PATH}/#{dir}"
       code "mvn -Dmaven.test.skip=true package"
     end
@@ -149,7 +169,7 @@ end
 
 ##
 ## TODO: Make this more portable
-##  Change ownership of the vlewrapper/vle/node folder 
+##  Change ownership of the vlewrapper/vle/node folder
 ## to be owned bynode["wise4"]["dev_user"]
 ##
 execute "give Wise4 Dev user permission to write vle/node directory" do
@@ -193,7 +213,7 @@ execute "create wise4user user" do
 end
 
 execute "create application_production databases" do
-  not_if { File.exists? '/home/vagrant/made_databases'}
+  not_if { File.exists? '/home/wiseuser/made_databases'}
   user = node["wise4"]["db_user"]
   pass = node["wise4"]["db_pass"]
   sql= <<-SQL
@@ -206,22 +226,22 @@ execute "create application_production databases" do
     flush privileges;
   SQL
   # using commandline here instead of mysql recipe because that doesn't support for queries outside of databases
-  command "mysql -u root -p#{node[:mysql][:server_root_password]} -e\"#{sql}\" && touch /home/vagrant/made_databases"
-  creates "/home/vagrant/made_databases"
+  command "mysql -u root -p#{node[:mysql][:server_root_password]} -e\"#{sql}\" && touch /home/wiseuser/made_databases"
+  creates "/home/wiseuser/made_databases"
 end
 
 execute "create-sail_database-schemas" do
-  not_if { File.exists? '/home/vagrant/made_sail_schema'}
+  not_if { File.exists? '/home/wiseuser/made_sail_schema'}
   cwd "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/tels"
-  command "mysql sail_database -u root -p#{node[:mysql][:server_root_password]} < wise4-createtables.sql && touch /home/vagrant/made_sail_schema"
-  creates "/home/vagrant/made_sail_schema"
+  command "mysql sail_database -u root -p#{node[:mysql][:server_root_password]} < wise4-createtables.sql && touch /home/wiseuser/made_sail_schema"
+  creates "/home/wiseuser/made_sail_schema"
 end
 
 execute "insert-default-values-into-sail_database" do
-  not_if { File.exists? '/home/vagrant/made_sail_data'}
+  not_if { File.exists? '/home/wiseuser/made_sail_data'}
   cwd "#{node["tomcat"]["webapp_dir"]}/webapp/WEB-INF/classes/tels"
-  command "mysql sail_database -u root -p#{node[:mysql][:server_root_password]} < wise4-initial-data.sql  && touch /home/vagrant/made_sail_data"
-  creates "/home/vagrant/made_sail_data"
+  command "mysql sail_database -u root -p#{node[:mysql][:server_root_password]} < wise4-initial-data.sql  && touch /home/wiseuser/made_sail_data"
+  creates "/home/wiseuser/made_sail_data"
 end
 
 # restart tomcat after DB changes? sure.
